@@ -33,4 +33,25 @@ def manejoclientes(client):
             break
 
 
+def receive():
+    while True:
+        client, address = server.accept()
+        print(f"Se ha conectado correctamente con direccion {str(address)}")
+
+        client.send('NICK'.encode('ascii'))
+        nickname = client.recv(2048).decode('ascii')
+
+        nicks.append(nickname)
+        clients.append(client)
+
+        print(f"El nick del cliente es {nickname}")
+        broadcast(f"{nickname} se ha unido a la sala de chat!".encode('ascii'))
+        client.send("Conectado correctamente a la sala de chat!".encode('ascii'))
+
+        thread1 = threading.Thread(target=manejoclientes, args=(client,))
+        thread1.start()
+
+
+print("El servidor ya esta activo")
+receive()
 
